@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Гурток програмування</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px #00000033;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      width: 250px;
+      font-size: 1em;
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #fff;
+      color: #0072ff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #e0e0e0;
+    }
+
+    #submitted-list {
+      background-color: rgba(255, 255, 255, 0.15);
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: left;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #submitted-list h2 {
+      margin-top: 0;
+      font-size: 1.4em;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1em;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .delete-btn:hover {
+      color: #ff6b6b;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Гурток програмування</h1>
+
+  <div class="form-container">
+    <input type="text" id="nameInput" placeholder="Введіть ваше ім’я" />
+    <button onclick="submitName()">Надіслати</button>
+  </div>
+
+  <div id="submitted-list">
+    <h2>Список учасників:</h2>
+    <ul id="nameList"></ul>
+  </div>
+
+  <script>
+    // Завантаження імен з localStorage при запуску
+    window.onload = function () {
+      const savedNames = JSON.parse(localStorage.getItem('participants')) || [];
+      savedNames.forEach(name => addNameToList(name));
+    };
+
+    // Додавання імені до списку
+    function submitName() {
+      const input = document.getElementById('nameInput');
+      const name = input.value.trim();
+
+      if (name !== '') {
+        addNameToList(name);
+        saveName(name);
+        input.value = '';
+        input.focus();
+      } else {
+        alert('Будь ласка, введіть ім’я!');
+      }
+    }
+
+    // Додає елемент до DOM
+    function addNameToList(name) {
+      const list = document.getElementById('nameList');
+      const listItem = document.createElement('li');
+
+      const span = document.createElement('span');
+      span.textContent = name;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.innerHTML = '❌';
+      deleteBtn.className = 'delete-btn';
+      deleteBtn.onclick = function () {
+        list.removeChild(listItem);
+        deleteName(name);
+      };
+
+      listItem.appendChild(span);
+      listItem.appendChild(deleteBtn);
+      list.appendChild(listItem);
+    }
+
+    // Збереження імені в localStorage
+    function saveName(name) {
+      const savedNames = JSON.parse(localStorage.getItem('participants')) || [];
+      savedNames.push(name);
+      localStorage.setItem('participants', JSON.stringify(savedNames));
+    }
+
+    // Видалення імені з localStorage
+    function deleteName(nameToDelete) {
+      let savedNames = JSON.parse(localStorage.getItem('participants')) || [];
+      savedNames = savedNames.filter(name => name !== nameToDelete);
+      localStorage.setItem('participants', JSON.stringify(savedNames));
+    }
+  </script>
+
+</body>
+</html>
